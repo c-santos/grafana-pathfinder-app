@@ -5,7 +5,7 @@ import { buildLLMSystemPrompt } from '../utils/llm-context-formatter';
 // POC configuration — change OLLAMA_MODEL to match your local install.
 // Run `ollama list` to see available models.
 const OLLAMA_ENDPOINT = 'http://localhost:11434/v1/chat/completions';
-const OLLAMA_MODEL = 'llama3.2';
+const OLLAMA_MODEL = 'qwen3.5:4b';
 
 export interface UseLLMQueryReturn {
   ask: (question: string, contextData: ContextData) => Promise<void>;
