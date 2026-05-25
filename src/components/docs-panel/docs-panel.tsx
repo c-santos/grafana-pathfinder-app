@@ -45,6 +45,7 @@ import { createCompositeResolver } from '../../package-engine';
 
 import { ContextPanel } from './context-panel';
 import { BadgeUnlockedToast } from '../LearningPaths';
+import { LLMChatBox } from './components/LLMChatBox';
 import { getBadgeById } from '../../learning-paths';
 
 import { getStyles as getComponentStyles, addGlobalModalStyles } from '../../styles/docs-panel.styles';
@@ -1555,6 +1556,8 @@ function CombinedPanelRendererInner({ model }: SceneComponentProps<CombinedLearn
           queueCount={badgeCelebrationQueueCount}
         />
       )}
+
+      <LLMChatBox />
     </div>
   );
 }

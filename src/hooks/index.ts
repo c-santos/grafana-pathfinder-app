@@ -5,3 +5,4 @@ export {
   type UseAutoLaunchTutorialOptions,
 } from './useAutoLaunchTutorial';
 export { useStepProgressFromEvents } from './useStepProgressFromEvents';
+export { useLLMQuery, type UseLLMQueryReturn } from './useLLMQuery';
