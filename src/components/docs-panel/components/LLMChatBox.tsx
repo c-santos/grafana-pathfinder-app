@@ -4,6 +4,7 @@ import { GrafanaTheme2 } from '@grafana/data';
 import { useStyles2 } from '@grafana/ui';
 import { useContextPanel } from '../../../context-engine/context.hook';
 import { useLLMQuery } from '../../../hooks/useLLMQuery';
+import { useInteractiveElements } from '../../../interactive-engine';
 
 function getStyles(theme: GrafanaTheme2) {
   return {
@@ -81,6 +82,7 @@ export function LLMChatBox() {
   const styles = useStyles2(getStyles);
   const { contextData } = useContextPanel();
   const { ask, answer, isLoading, error, reset } = useLLMQuery();
+  const { executeInteractiveAction } = useInteractiveElements();
   const [question, setQuestion] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -107,6 +109,16 @@ export function LLMChatBox() {
     inputRef.current?.focus();
   }, [reset]);
 
+  const handleHighlightDemo = useCallback(async () => {
+    await executeInteractiveAction(
+      'highlight',
+      'input[placeholder="Ask a question…"]',
+      undefined,
+      'show',
+      'This is the LLM chat input'
+    );
+  }, [executeInteractiveAction]);
+
   return (
     <div className={styles.container}>
       <span className={styles.label}>Ask Ollama about your Grafana context</span>
@@ -122,6 +134,9 @@ export function LLMChatBox() {
         />
         <button className={styles.button} onClick={handleAsk} disabled={isLoading || !question.trim()}>
           {isLoading ? '…' : 'Ask'}
+        </button>
+        <button className={styles.button} onClick={handleHighlightDemo} disabled={isLoading}>
+          Highlight input
         </button>
         {(answer || error) && (
           <button className={styles.button} onClick={handleReset} disabled={isLoading}>
