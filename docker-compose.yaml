@@ -24,6 +24,8 @@ services:
       - --config.file=/etc/prometheus/prometheus.yml
     ports:
       - 9090:9090/tcp
+    volumes:
+      - ./demo/prometheus.yml:/etc/prometheus/prometheus.yml
 
   loki:
     image: grafana/loki:${GRAFANA_LOKI_VERSION:-3.5.2}
