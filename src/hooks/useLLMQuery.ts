@@ -3,9 +3,8 @@ import type { ContextData } from '../types/context.types';
 import { buildLLMSystemPrompt } from '../utils/llm-context-formatter';
 
 // POC configuration — change OLLAMA_MODEL to match your local install.
-// Run `ollama list` to see available models.
-const OLLAMA_ENDPOINT = 'http://localhost:11434/v1/chat/completions';
-const OLLAMA_MODEL = 'qwen3.5:4b';
+const OPENAI_API_URL = 'http://127.0.0.1:1234/v1/chat/completions';
+const LLM_MODEL = 'qwen3.5:9b';
 
 export interface UseLLMQueryReturn {
   ask: (question: string, contextData: ContextData) => Promise<void>;
@@ -32,11 +31,11 @@ export function useLLMQuery(): UseLLMQueryReturn {
     try {
       const systemPrompt = buildLLMSystemPrompt(contextData);
 
-      const response = await fetch(OLLAMA_ENDPOINT, {
+      const response = await fetch(OPENAI_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: OLLAMA_MODEL,
+          model: LLM_MODEL,
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: question },
