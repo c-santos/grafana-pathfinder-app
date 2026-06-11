@@ -93,6 +93,14 @@ export function DocsPanelTabBar({
             <Icon name="bug" size="md" />
           </button>
         )}
+        <button
+          className={`${styles.iconTab} ${activeTabId === 'llm' ? styles.iconTabActive : ''}`}
+          onClick={() => onSetActiveTab('llm')}
+          title={t('docsPanel.llmChat', 'Ask AI')}
+          data-testid={testIds.docsPanel.tab('llm')}
+        >
+          <Icon name="ai" size="md" />
+        </button>
       </div>
 
       {/* Divider - only show when there are guide tabs */}

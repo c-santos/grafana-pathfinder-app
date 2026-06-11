@@ -62,6 +62,19 @@ export function usePermanentTabs({ model, isDevMode, isEditorUser, tabs }: UsePe
       });
     }
 
+    if (!tabs.some((t) => t.id === 'llm')) {
+      missing.push({
+        id: 'llm',
+        title: 'Ask AI',
+        baseUrl: '',
+        currentUrl: '',
+        content: null,
+        isLoading: false,
+        error: null,
+        type: 'llm',
+      });
+    }
+
     if (isEditorUser && !tabs.some((t) => t.id === 'editor')) {
       missing.push({
         id: 'editor',

@@ -15,11 +15,11 @@ export interface TabVisibilityResult {
   overflowedTabs: LearningJourneyTab[];
 }
 
-export const PERMANENT_TAB_IDS = new Set(['recommendations', 'devtools', 'editor']);
+export const PERMANENT_TAB_IDS = new Set(['recommendations', 'devtools', 'editor', 'llm']);
 
 /**
  * Computes which tabs fit in the visible area and which move to overflow.
- * Permanent tabs (recommendations, devtools, editor) are always in visibleTabs;
+ * Permanent tabs (recommendations, devtools, editor, llm) are always in visibleTabs;
  * guide tabs are split by available width, with the active tab forced visible if it would be overflowed.
  */
 export function computeTabVisibility(

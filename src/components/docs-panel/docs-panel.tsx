@@ -45,7 +45,6 @@ import { createCompositeResolver } from '../../package-engine';
 
 import { ContextPanel } from './context-panel';
 import { BadgeUnlockedToast } from '../LearningPaths';
-import { LLMChatBox } from './components/LLMChatBox';
 import { getBadgeById } from '../../learning-paths';
 
 import { getStyles as getComponentStyles, addGlobalModalStyles } from '../../styles/docs-panel.styles';
@@ -819,6 +818,36 @@ class CombinedLearningJourneyPanel extends SceneObjectBase<CombinedPanelState> i
     this.saveTabsToStorage();
   }
 
+  /**
+   * Open the LLM Chat tab (or switch to it if already open)
+   */
+  public openLLMTab(): void {
+    const existingTab = this.state.tabs.find((t) => t.id === 'llm');
+    if (existingTab) {
+      this.setState({ activeTabId: 'llm' });
+      this.saveTabsToStorage();
+      return;
+    }
+
+    const newTab: LearningJourneyTab = {
+      id: 'llm',
+      title: 'Ask AI',
+      baseUrl: '',
+      currentUrl: '',
+      content: null,
+      isLoading: false,
+      error: null,
+      type: 'llm',
+    };
+
+    this.setState({
+      tabs: [...this.state.tabs, newTab],
+      activeTabId: 'llm',
+    });
+
+    this.saveTabsToStorage();
+  }
+
   public async openDocsPage(url: string, title?: string, options?: OpenDocsOptions): Promise<string> {
     const { source, skipReadyToBegin, packageInfo } = options ?? {};
 
@@ -1556,8 +1585,6 @@ function CombinedPanelRendererInner({ model }: SceneComponentProps<CombinedLearn
           queueCount={badgeCelebrationQueueCount}
         />
       )}
-
-      <LLMChatBox />
     </div>
   );
 }

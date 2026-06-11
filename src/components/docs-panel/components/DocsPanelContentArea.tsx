@@ -36,6 +36,7 @@ import { AlignmentPendingContext } from '../../../global-state/alignment-pending
 import { SkeletonLoader } from '../../SkeletonLoader';
 import { AlignmentPrompt } from './AlignmentPrompt';
 import { ErrorDisplay } from './ErrorDisplay';
+import { LLMChatBox } from './LLMChatBox';
 import { FullScreenModeNotice } from './FullScreenModeNotice';
 import { LoadingIndicator } from './LoadingIndicator';
 import { LearningJourneyMilestoneToolbar } from './LearningJourneyMilestoneToolbar';
@@ -126,6 +127,10 @@ export function DocsPanelContentArea(props: DocsPanelContentAreaProps): React.Re
 
         if (isRecommendationsTab) {
           return <contextPanel.Component model={contextPanel} />;
+        }
+
+        if (activeTabId === 'llm') {
+          return <LLMChatBox />;
         }
 
         if (activeTabId === 'devtools') {

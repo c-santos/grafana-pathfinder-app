@@ -50,7 +50,7 @@ export interface LearningJourneyTab {
   content: RawContent | null;
   isLoading: boolean;
   error: string | null;
-  type?: 'learning-journey' | 'docs' | 'devtools' | 'interactive' | 'editor';
+  type?: 'learning-journey' | 'docs' | 'devtools' | 'interactive' | 'editor' | 'llm';
   packageInfo?: PackageOpenInfo;
   /** Cached milestone data from initial path package load, used to persist
    *  learningJourney metadata across milestone arrow navigation. */
@@ -68,7 +68,7 @@ export interface PersistedTabData {
   title: string;
   baseUrl: string;
   currentUrl?: string; // The specific milestone/page URL user was viewing (optional for backward compatibility)
-  type?: 'learning-journey' | 'docs' | 'devtools' | 'interactive' | 'editor';
+  type?: 'learning-journey' | 'docs' | 'devtools' | 'interactive' | 'editor' | 'llm';
   packageInfo?: PackageOpenInfo;
 }
 

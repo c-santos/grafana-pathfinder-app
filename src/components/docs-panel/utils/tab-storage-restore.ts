@@ -95,6 +95,21 @@ export async function restoreTabsFromStorage(
     const validateUrl = createUrlValidator(options.isDevMode);
 
     parsedData.forEach((data: PersistedTabData) => {
+      // Handle llm tab specially - it has no URLs to validate
+      if (data.type === 'llm') {
+        tabs.push({
+          id: 'llm',
+          title: 'Ask AI',
+          baseUrl: '',
+          currentUrl: '',
+          content: null,
+          isLoading: false,
+          error: null,
+          type: 'llm',
+        });
+        return;
+      }
+
       // Handle devtools tab specially - it has no URLs to validate
       if (data.type === 'devtools') {
         tabs.push({
