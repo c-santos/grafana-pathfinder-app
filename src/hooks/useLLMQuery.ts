@@ -5,70 +5,78 @@ import { buildLLMSystemPrompt } from '../utils/llm-context-formatter';
 export const OPENAI_API_URL = 'http://127.0.0.1:1234/v1/chat/completions';
 export const LLM_MODEL = 'qwen3.5-9b';
 
+export interface Message {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
 export interface UseLLMQueryReturn {
   ask: (question: string, contextData: ContextData) => Promise<void>;
-  answer: string | null;
+  messages: Message[];
   isLoading: boolean;
   error: string | null;
   reset: () => void;
 }
 
 export function useLLMQuery(): UseLLMQueryReturn {
-  const [answer, setAnswer] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const ask = useCallback(async (question: string, contextData: ContextData) => {
-    if (!question.trim()) {
-      return;
-    }
+  const ask = useCallback(
+    async (question: string, contextData: ContextData) => {
+      if (!question.trim()) {
+        return;
+      }
 
-    setIsLoading(true);
-    setError(null);
-    setAnswer(null);
+      const userMessage: Message = { role: 'user', content: question };
 
-    try {
-      const systemPrompt = buildLLMSystemPrompt(contextData);
+      setMessages((prev) => [...prev, userMessage]);
+      setIsLoading(true);
+      setError(null);
 
-      const body = JSON.stringify({
-        model: LLM_MODEL,
-        messages: [
+      try {
+        const systemPrompt = buildLLMSystemPrompt(contextData);
+
+        // Build full thread: system prompt + all prior messages + new user message
+        const apiMessages = [
           { role: 'system', content: systemPrompt },
+          ...messages.map((m) => ({ role: m.role, content: m.content })),
           { role: 'user', content: question },
-        ],
-      });
-      console.log(body);
+        ];
 
-      const response = await fetch(OPENAI_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: body,
-      });
+        const response = await fetch(OPENAI_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: LLM_MODEL, messages: apiMessages }),
+        });
 
-      if (!response.ok) {
-        throw new Error(`LLM server returned ${response.status}: ${response.statusText}`);
+        if (!response.ok) {
+          throw new Error(`LLM server returned ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        const content = data?.choices?.[0]?.message?.content;
+
+        if (typeof content !== 'string') {
+          throw new Error('Unexpected response format from LLM server');
+        }
+
+        setMessages((prev) => [...prev, { role: 'assistant', content }]);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'LLM call failed');
+      } finally {
+        setIsLoading(false);
       }
-
-      const data = await response.json();
-      const content = data?.choices?.[0]?.message?.content;
-
-      if (typeof content !== 'string') {
-        throw new Error('Unexpected response format from LLM server');
-      }
-
-      setAnswer(content);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'LLM call failed');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    [messages]
+  );
 
   const reset = useCallback(() => {
-    setAnswer(null);
+    setMessages([]);
     setError(null);
     setIsLoading(false);
   }, []);
 
-  return { ask, answer, isLoading, error, reset };
+  return { ask, messages, isLoading, error, reset };
 }
