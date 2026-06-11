@@ -2,8 +2,8 @@ import { useState, useCallback } from 'react';
 import type { ContextData } from '../types/context.types';
 import { buildLLMSystemPrompt } from '../utils/llm-context-formatter';
 
-const OPENAI_API_URL = 'http://127.0.0.1:1234/v1/chat/completions';
-const LLM_MODEL = 'qwen3.5-9b';
+export const OPENAI_API_URL = 'http://127.0.0.1:1234/v1/chat/completions';
+export const LLM_MODEL = 'qwen3.5-9b';
 
 export interface UseLLMQueryReturn {
   ask: (question: string, contextData: ContextData) => Promise<void>;
@@ -46,14 +46,14 @@ export function useLLMQuery(): UseLLMQueryReturn {
       });
 
       if (!response.ok) {
-        throw new Error(`Ollama returned ${response.status}: ${response.statusText}`);
+        throw new Error(`LLM server returned ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
       const content = data?.choices?.[0]?.message?.content;
 
       if (typeof content !== 'string') {
-        throw new Error('Unexpected response format from Ollama');
+        throw new Error('Unexpected response format from LLM server');
       }
 
       setAnswer(content);

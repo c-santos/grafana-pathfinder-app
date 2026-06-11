@@ -3,7 +3,7 @@ import { css } from '@emotion/css';
 import { GrafanaTheme2 } from '@grafana/data';
 import { useStyles2 } from '@grafana/ui';
 import { useContextPanel } from '../../../context-engine/context.hook';
-import { useLLMQuery } from '../../../hooks/useLLMQuery';
+import { LLM_MODEL, OPENAI_API_URL, useLLMQuery } from '../../../hooks/useLLMQuery';
 import { useInteractiveElements } from '../../../interactive-engine';
 
 function getStyles(theme: GrafanaTheme2) {
@@ -121,7 +121,9 @@ export function LLMChatBox() {
 
   return (
     <div className={styles.container}>
-      <span className={styles.label}>Ask Ollama about your Grafana context</span>
+      <span className={styles.label}>Ask AI about your Grafana context</span>
+      <span className={styles.label}>URL: {OPENAI_API_URL}</span>
+      <span className={styles.label}>Model: {LLM_MODEL}</span>
       <div className={styles.inputRow}>
         <input
           ref={inputRef}
